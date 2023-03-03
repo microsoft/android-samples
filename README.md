@@ -1,14 +1,18 @@
-# Project
+![build-test-check](https://github.com/microsoft/android-samples/actions/workflows/build_test_check.yml/badge.svg)
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+# Microsoft Android Samples
 
-As the maintainer of this project, please make a few updates:
+This repo contains samples that demonstrate how to use various Microsoft APIs in Android apps.
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+Please read the [code of conduct](CODE_OF_CONDUCT.md) and [contribution guidelines](CONTRIBUTING.md).
+
+## Getting Started
+
+When importing the sample code into Android Studio, use the specific project folder (ex: **TwoNote**) as the base directory of the project.
+
+## Samples
+
+[TwoNote](/TwoNote/): A note taking app that uses the [Microsoft Graph](https://learn.microsoft.com/graph/overview) to sync a user's notes to OneNote.
 
 ## Contributing
 
