@@ -1,4 +1,4 @@
-![build-test-check](https://github.com/microsoft/android-samples/actions/workflows/build_test_check.yml/badge.svg)
+![build-test-check](https://github.com/microsoft/android-samples/actions/workflows/build-test-check.yml/badge.svg)
 
 # Microsoft Android Samples
 
