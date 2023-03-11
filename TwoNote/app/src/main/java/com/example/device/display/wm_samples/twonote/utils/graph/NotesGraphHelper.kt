@@ -22,8 +22,8 @@ import com.microsoft.graph.serializer.DefaultSerializer
 import cz.msebera.android.httpclient.entity.ContentType
 import java.util.concurrent.CompletableFuture
 
-class NotesGraphHelper(context: Context, onCreated: () -> Unit, scopes: MutableList<String>) :
-    BaseGraphHelper(context, onCreated, scopes) {
+class NotesGraphHelper(context: Context, onCreated: () -> Unit, scopes: MutableList<String>, authority: String) :
+    BaseGraphHelper(context, onCreated, scopes, authority) {
     companion object {
         private var globalInstance: NotesGraphHelper? = null
 
@@ -31,9 +31,10 @@ class NotesGraphHelper(context: Context, onCreated: () -> Unit, scopes: MutableL
             context: Context,
             onCreated: () -> Unit,
             scopes: MutableList<String> = getNoteSyncScopes(),
+            authority: String = "https://login.microsoftonline.com/common"
         ): NotesGraphHelper {
             if (globalInstance == null)
-                globalInstance = NotesGraphHelper(context, onCreated, scopes)
+                globalInstance = NotesGraphHelper(context, onCreated, scopes, authority)
 
             return globalInstance!!
         }
