@@ -19,6 +19,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -577,9 +578,26 @@ class NoteDetailFragment : Fragment() {
                                     ?.thenAccept { pg ->
                                         inode?.onenotePageId = pg.id ?: ""
                                         save(inode, note)
+
+                                        graphViewModel.showSnackbar(
+                                            requireActivity(),
+                                            R.string.create_page_success,
+                                            R.string.open
+                                        ) {
+                                            val pageUrl = pg.links?.oneNoteClientUrl?.href?.replace(
+                                                "=([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})&",
+                                                "={$1}&"
+                                            )
+
+                                            val uri = Uri.parse(pageUrl)
+                                            val intent = Intent(Intent.ACTION_VIEW, uri)
+
+                                            ContextCompat.startActivity(requireContext(), intent, null)
+                                        }
                                     }
                                     ?.exceptionally { err ->
                                         this.launch { graphViewModel.graphHelper?.handleError(err) }
+                                        graphViewModel.showSnackbar(requireActivity(), R.string.create_page_fail)
 
                                         null
                                     }
@@ -589,6 +607,7 @@ class NoteDetailFragment : Fragment() {
                         }
                         ?.exceptionally {
                             this.launch { graphViewModel.graphHelper?.handleError(it) }
+                            graphViewModel.showSnackbar(requireActivity(), R.string.create_page_fail)
 
                             null
                         }
@@ -597,9 +616,12 @@ class NoteDetailFragment : Fragment() {
                     graphViewModel.updateOneNotePage(inode, note)
                         ?.thenAccept {
                             save(inode, note)
+
+                            graphViewModel.showSnackbar(requireActivity(), R.string.update_page_success)
                         }
                         ?.exceptionally {
                             this.launch { graphViewModel.graphHelper?.handleError(it) }
+                            graphViewModel.showSnackbar(requireActivity(), R.string.update_page_fail)
 
                             null
                         }

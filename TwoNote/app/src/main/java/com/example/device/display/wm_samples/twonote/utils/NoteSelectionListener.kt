@@ -44,11 +44,22 @@ class NoteSelectionListener(
                             host.context?.let { cntx ->
                                 FileSystem.delete(cntx, DataProvider.getActiveSubDirectory(), inode)
                                 host.lifecycleScope.launch(Dispatchers.IO) {
-                                    graphViewModel.deleteOneNotePage(inode)?.exceptionally {
-                                        this.launch { graphViewModel.graphHelper?.handleError(it) }
+                                    graphViewModel.deleteOneNotePage(inode)
+                                        ?.thenAccept {
+                                            graphViewModel.showSnackbar(
+                                                host.requireActivity(),
+                                                R.string.delete_page_success
+                                            )
+                                        }
+                                        ?.exceptionally {
+                                            this.launch { graphViewModel.graphHelper?.handleError(it) }
+                                            graphViewModel.showSnackbar(
+                                                host.requireActivity(),
+                                                R.string.delete_page_fail
+                                            )
 
-                                        null
-                                    }
+                                            null
+                                        }
                                 }
                             }
                         }
