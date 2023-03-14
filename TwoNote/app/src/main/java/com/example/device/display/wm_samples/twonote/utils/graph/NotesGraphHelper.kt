@@ -7,7 +7,10 @@ package com.example.device.display.wm_samples.twonote.utils.graph
 
 import Defines.GRAPH_TAG
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
 import com.microsoft.graph.core.GraphErrorCodes
 import com.microsoft.graph.core.Multipart
 import com.microsoft.graph.http.GraphServiceException
@@ -22,8 +25,8 @@ import com.microsoft.graph.serializer.DefaultSerializer
 import cz.msebera.android.httpclient.entity.ContentType
 import java.util.concurrent.CompletableFuture
 
-class NotesGraphHelper(context: Context, onCreated: () -> Unit, scopes: MutableList<String>) :
-    BaseGraphHelper(context, onCreated, scopes) {
+class NotesGraphHelper(context: Context, onCreated: () -> Unit, scopes: MutableList<String>, authority: String) :
+    BaseGraphHelper(context, onCreated, scopes, authority) {
     companion object {
         private var globalInstance: NotesGraphHelper? = null
 
@@ -31,9 +34,10 @@ class NotesGraphHelper(context: Context, onCreated: () -> Unit, scopes: MutableL
             context: Context,
             onCreated: () -> Unit,
             scopes: MutableList<String> = getNoteSyncScopes(),
+            authority: String = "https://login.microsoftonline.com/common"
         ): NotesGraphHelper {
             if (globalInstance == null)
-                globalInstance = NotesGraphHelper(context, onCreated, scopes)
+                globalInstance = NotesGraphHelper(context, onCreated, scopes, authority)
 
             return globalInstance!!
         }
@@ -278,4 +282,24 @@ class NotesGraphHelper(context: Context, onCreated: () -> Unit, scopes: MutableL
 
 private fun getNoteSyncScopes(): MutableList<String> {
     return mutableListOf("user.read", "notes.read", "notes.readwrite", "notes.create")
+}
+
+/**
+ * Opens a new OneNote page in the OneNote client
+ *
+ * Based on example from:
+ * https://learn.microsoft.com/graph/open-onenote-client#android-example
+ */
+fun openNewPageUrl(context: Context, page: OnenotePage) {
+    // Parse and format URL
+    val onenoteClientUrl = page.links?.oneNoteClientUrl?.href
+    val androidClientUrl = onenoteClientUrl?.replace(
+        "=([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})&",
+        "={$1}&"
+    )
+
+    // Open URL
+    val uri = Uri.parse(androidClientUrl)
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+    startActivity(context, intent, null)
 }

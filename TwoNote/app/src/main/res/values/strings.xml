@@ -40,17 +40,13 @@
     <string name="confirm_clear">Confirm clear</string>
     <string name="remove_image">Remove images</string>
 
-    <!-- Toast strings -->
-    <string name="refresh_sections" tools:ignore="MissingTranslation">Refreshing section list…</string>
-    <string name="refresh_sections_fail" tools:ignore="MissingTranslation">Failed to fetch sections</string>
-    <string name="refresh_pages" tools:ignore="MissingTranslation">Refreshing page list…</string>
-    <string name="refresh_pages_fail" tools:ignore="MissingTranslation">Failed to fetch pages</string>
-    <string name="create_page" tools:ignore="MissingTranslation">Creating OneNote page…</string>
+    <!-- Snackbar strings -->
     <string name="create_page_success" tools:ignore="MissingTranslation">Successfully created new OneNote page!</string>
-    <string name="create_page_fail" tools:ignore="MissingTranslation">Failed to created page</string>
-    <string name="retrieve_page" tools:ignore="MissingTranslation">Retrieving OneNote page…</string>
-    <string name="retrieve_page_fail" tools:ignore="MissingTranslation">Failed to retrieve page</string>
-    <string name="open_note" tools:ignore="MissingTranslation">Open note</string>
+    <string name="create_page_fail" tools:ignore="MissingTranslation">Failed to create page</string>
+    <string name="delete_page_success" tools:ignore="MissingTranslation">Successfully deleted OneNote page!</string>
+    <string name="delete_page_fail" tools:ignore="MissingTranslation">Failed to delete page</string>
+    <string name="update_page_success" tools:ignore="MissingTranslation">Successfully updated OneNote page!</string>
+    <string name="update_page_fail" tools:ignore="MissingTranslation">Failed to update page</string>
+    <string name="open" tools:ignore="MissingTranslation">Open</string>
     <string name="action_log" tools:ignore="MissingTranslation">Sync to OneNote</string>
-    <string name="sync_setup_success" tools:ignore="MissingTranslation">Sync to OneNote set up successfully!</string>
 </resources>

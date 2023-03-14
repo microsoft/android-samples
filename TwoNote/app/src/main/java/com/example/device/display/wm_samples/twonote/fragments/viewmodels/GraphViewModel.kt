@@ -14,11 +14,13 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.device.display.wm_samples.twonote.R
 import com.example.device.display.wm_samples.twonote.models.INode
 import com.example.device.display.wm_samples.twonote.models.Note
 import com.example.device.display.wm_samples.twonote.utils.graph.NotesGraphHelper
 import com.example.device.display.wm_samples.twonote.utils.graph.accountCallback
 import com.example.device.display.wm_samples.twonote.utils.graph.authCallback
+import com.google.android.material.snackbar.Snackbar
 import com.microsoft.graph.models.OnenotePage
 import com.microsoft.graph.requests.OnenoteSectionCollectionPage
 import com.microsoft.identity.client.AuthenticationCallback
@@ -198,5 +200,36 @@ class GraphViewModel : ViewModel() {
         return note.images.firstOrNull()?.let { serializedImage ->
             Base64.decode(serializedImage.image, Base64.DEFAULT)
         }
+    }
+
+    /**
+     * Show a Snackbar with the provided string resource message and action label/action
+     */
+    fun showSnackbar(
+        activity: Activity,
+        messageId: Int,
+        actionLabelId: Int? = null,
+        action: (() -> Unit)? = null
+    ) {
+        val actionLabel = actionLabelId?.let { activity.resources.getString(it) }
+        showSnackbar(activity, activity.resources.getString(messageId), actionLabel, action)
+    }
+
+    /**
+     * Show a Snackbar with the provided string message and action label/action
+     */
+    fun showSnackbar(
+        activity: Activity,
+        message: String,
+        actionLabel: String? = null,
+        action: (() -> Unit)? = null
+    ) {
+        Snackbar.make(activity.findViewById(R.id.coordinator), message, Snackbar.LENGTH_LONG)
+            .apply {
+                if (!actionLabel.isNullOrBlank() && action != null) {
+                    setAction(actionLabel) { action() }
+                }
+            }
+            .show()
     }
 }

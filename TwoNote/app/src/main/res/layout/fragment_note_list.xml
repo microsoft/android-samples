@@ -40,4 +40,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:tint="?attr/colorOnPrimary" />
 
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toStartOf="@id/add_fab"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:context=".MainActivity" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
