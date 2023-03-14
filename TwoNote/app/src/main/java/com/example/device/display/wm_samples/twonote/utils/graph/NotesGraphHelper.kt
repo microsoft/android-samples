@@ -7,7 +7,10 @@ package com.example.device.display.wm_samples.twonote.utils.graph
 
 import Defines.GRAPH_TAG
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
 import com.microsoft.graph.core.GraphErrorCodes
 import com.microsoft.graph.core.Multipart
 import com.microsoft.graph.http.GraphServiceException
@@ -279,4 +282,24 @@ class NotesGraphHelper(context: Context, onCreated: () -> Unit, scopes: MutableL
 
 private fun getNoteSyncScopes(): MutableList<String> {
     return mutableListOf("user.read", "notes.read", "notes.readwrite", "notes.create")
+}
+
+/**
+ * Opens a new OneNote page in the OneNote client
+ *
+ * Based on example from:
+ * https://learn.microsoft.com/graph/open-onenote-client#android-example
+ */
+fun openNewPageUrl(context: Context, page: OnenotePage) {
+    // Parse and format URL
+    val onenoteClientUrl = page.links?.oneNoteClientUrl?.href
+    val androidClientUrl = onenoteClientUrl?.replace(
+        "=([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})&",
+        "={$1}&"
+    )
+
+    // Open URL
+    val uri = Uri.parse(androidClientUrl)
+    val intent = Intent(Intent.ACTION_VIEW, uri)
+    startActivity(context, intent, null)
 }

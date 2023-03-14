@@ -19,7 +19,6 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -54,6 +53,7 @@ import com.example.device.display.wm_samples.twonote.models.Note
 import com.example.device.display.wm_samples.twonote.utils.DataProvider
 import com.example.device.display.wm_samples.twonote.utils.DragHandler
 import com.example.device.display.wm_samples.twonote.utils.FileSystem
+import com.example.device.display.wm_samples.twonote.utils.graph.openNewPageUrl
 import com.example.device.display.wm_samples.twonote.utils.isRotated
 import com.example.device.ink.InkView
 import com.example.device.ink.InputManager
@@ -580,20 +580,11 @@ class NoteDetailFragment : Fragment() {
                                         save(inode, note)
 
                                         graphViewModel.showSnackbar(
-                                            requireActivity(),
-                                            R.string.create_page_success,
-                                            R.string.open
-                                        ) {
-                                            val pageUrl = pg.links?.oneNoteClientUrl?.href?.replace(
-                                                "=([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})&",
-                                                "={$1}&"
-                                            )
-
-                                            val uri = Uri.parse(pageUrl)
-                                            val intent = Intent(Intent.ACTION_VIEW, uri)
-
-                                            ContextCompat.startActivity(requireContext(), intent, null)
-                                        }
+                                            activity = requireActivity(),
+                                            messageId = R.string.create_page_success,
+                                            actionLabelId = R.string.open,
+                                            action = { openNewPageUrl(requireContext(), pg) }
+                                        )
                                     }
                                     ?.exceptionally { err ->
                                         this.launch { graphViewModel.graphHelper?.handleError(err) }
