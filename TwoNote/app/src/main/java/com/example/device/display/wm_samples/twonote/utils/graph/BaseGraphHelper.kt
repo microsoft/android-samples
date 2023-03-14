@@ -13,7 +13,6 @@ import com.example.device.display.wm_samples.twonote.R
 import com.microsoft.graph.authentication.IAuthenticationProvider
 import com.microsoft.graph.requests.GraphServiceClient
 import com.microsoft.identity.client.AuthenticationCallback
-import com.microsoft.identity.client.IAccount
 import com.microsoft.identity.client.IAuthenticationResult
 import com.microsoft.identity.client.IPublicClientApplication
 import com.microsoft.identity.client.ISingleAccountPublicClientApplication
@@ -25,17 +24,22 @@ import com.microsoft.identity.client.SilentAuthenticationCallback
 import com.microsoft.identity.client.exception.MsalException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.Request
 import java.util.concurrent.CompletableFuture
+import okhttp3.Request as OKRequest
 
 /**
  * Helper for using the Microsoft Graph in an Android application
  *
  * Authenticates using MSAL and makes graph requests with the MS Graph Java SDK
  */
-open class BaseGraphHelper(context: Context, onCreated: () -> Unit, private val scopes: MutableList<String>) {
-    protected var mSingleAccountApp: ISingleAccountPublicClientApplication? = null
-    protected var graphClient: GraphServiceClient<Request>? = null
+open class BaseGraphHelper(
+    context: Context,
+    onCreated: () -> Unit,
+    private val scopes: MutableList<String>,
+    private val authority: String
+) {
+    var mSingleAccountApp: ISingleAccountPublicClientApplication? = null
+    protected var graphClient: GraphServiceClient<OKRequest>? = null
 
     /**
      * Create an instance of an app registration that uses our configuration file auth_config_single_account.json.
@@ -158,29 +162,16 @@ open class BaseGraphHelper(context: Context, onCreated: () -> Unit, private val 
         if (accountIsNull())
             return
 
-        val acquireTokenSilent: (IAccount?) -> Unit = { account ->
-            account?.let {
-
-                // TODO: switch from deprecated method when known issues are fixed
+        // TODO: switch from deprecated method when known issues are fixed
 //                val silentTokenParameters = AcquireTokenSilentParameters.Builder()
-//                    .fromAuthority(it.authority)
+//                    .fromAuthority(authority)
 //                    .withScopes(scopes)
 //                    .withCallback(silentCallback)
 //                    .build()
 //
 //                mSingleAccountApp!!.acquireTokenSilentAsync(silentTokenParameters)
 
-                mSingleAccountApp!!.acquireTokenSilentAsync(scopes.toTypedArray(), it.authority, silentCallback)
-            }
-        }
-
-        // Once account has been loaded asynchronously, acquire token silently
-        loadAccount(
-            accountCallback(
-                onAccountLoaded = { acquireTokenSilent(it) },
-                onAccountChanged = { _, currentAccount -> acquireTokenSilent(currentAccount) }
-            )
-        )
+        mSingleAccountApp!!.acquireTokenSilentAsync(scopes.toTypedArray(), authority, silentCallback)
     }
 
     /**

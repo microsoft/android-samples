@@ -53,6 +53,7 @@ import com.example.device.display.wm_samples.twonote.models.Note
 import com.example.device.display.wm_samples.twonote.utils.DataProvider
 import com.example.device.display.wm_samples.twonote.utils.DragHandler
 import com.example.device.display.wm_samples.twonote.utils.FileSystem
+import com.example.device.display.wm_samples.twonote.utils.graph.openNewPageUrl
 import com.example.device.display.wm_samples.twonote.utils.isRotated
 import com.example.device.ink.InkView
 import com.example.device.ink.InputManager
@@ -577,9 +578,17 @@ class NoteDetailFragment : Fragment() {
                                     ?.thenAccept { pg ->
                                         inode?.onenotePageId = pg.id ?: ""
                                         save(inode, note)
+
+                                        graphViewModel.showSnackbar(
+                                            activity = requireActivity(),
+                                            messageId = R.string.create_page_success,
+                                            actionLabelId = R.string.open,
+                                            action = { openNewPageUrl(requireContext(), pg) }
+                                        )
                                     }
                                     ?.exceptionally { err ->
                                         this.launch { graphViewModel.graphHelper?.handleError(err) }
+                                        graphViewModel.showSnackbar(requireActivity(), R.string.create_page_fail)
 
                                         null
                                     }
@@ -589,6 +598,7 @@ class NoteDetailFragment : Fragment() {
                         }
                         ?.exceptionally {
                             this.launch { graphViewModel.graphHelper?.handleError(it) }
+                            graphViewModel.showSnackbar(requireActivity(), R.string.create_page_fail)
 
                             null
                         }
@@ -597,9 +607,12 @@ class NoteDetailFragment : Fragment() {
                     graphViewModel.updateOneNotePage(inode, note)
                         ?.thenAccept {
                             save(inode, note)
+
+                            graphViewModel.showSnackbar(requireActivity(), R.string.update_page_success)
                         }
                         ?.exceptionally {
                             this.launch { graphViewModel.graphHelper?.handleError(it) }
+                            graphViewModel.showSnackbar(requireActivity(), R.string.update_page_fail)
 
                             null
                         }
